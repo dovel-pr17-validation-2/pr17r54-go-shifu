@@ -1,0 +1,29 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/go
+{
+	"name": "shifu-devcontainer",
+	"image": "edgenesis/devcontainer-go:latest",
+	"runArgs": [
+		"--cap-add=SYS_PTRACE",
+		"--security-opt",
+		"seccomp=unconfined",
+		"--network=host"
+	],
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"golang.go",
+				"ms-azuretools.vscode-docker",
+				"github.copilot",
+				"ms-python.autopep8",
+				"redhat.vscode-yaml",
+				"github.vscode-pull-request-github",
+				"ms-kubernetes-tools.vscode-kubernetes-tools",
+				"streetsidesoftware.code-spell-checker",
+				"yzhang.markdown-all-in-one"
+			]
+		}
+	}
+}

@@ -1,0 +1,36 @@
+# Validation only. Hermes owns immutable tag creation, tag-build verification,
+# publication and docs dispatch, in that order. Never publish from this workflow.
+name: Release Official Tag
+
+on:
+  pull_request:
+    branches:
+      - 'release_*'
+    types:
+      - closed
+
+permissions:
+  contents: read
+
+jobs:
+  tag_official:
+    if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'official_')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          persist-credentials: false
+      - name: Validate merged release tree
+        shell: bash
+        env:
+          BASE_BRANCH: ${{ github.base_ref }}
+          HEAD_BRANCH: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+          source tools/release/automation.sh
+          version="$(release_version_from_release_branch "$BASE_BRANCH")"
+          expected="$version"
+          [[ "$HEAD_BRANCH" == "official_${version}" ]]
+          python3 tools/release/validate_version.py --expected "$expected"
+          echo "Validated $expected; publication is owned by the Hermes release manager."
